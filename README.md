@@ -48,7 +48,7 @@ Key insights from exploratory analysis:
    - Higher power output in winter months (avg. 1.8MW vs summer 1.2MW)
    - Strong diurnal patterns in wind speed
 
-![Seasonal Trends](images/Numerical Columns over the Season.png)
+![Seasonal Trends](images/Numerical_Columns_over_the_Season.png)
 
 2. **Operational Bounds**:
    - Cut-in wind speed: 3.5 m/s

@@ -212,55 +212,43 @@ Alternatively, here is the detailed comparison table:
 2. **Technical Precision**:  
    ```python
    # Hybrid LSTM-RNN Core Architecture
-import tensorflow as tf
-from tensorflow.keras.layers import Bidirectional, Attention, Input
-from tensorflow.keras.models import Model
+    import tensorflow as tf
+    from tensorflow.keras.layers import Bidirectional, Attention, Input
+    from tensorflow.keras.models import Model
 
-# Define the input shape
-input_layer = Input(shape=(10, 3))
+    # Define the input shape
+    input_layer = Input(shape=(10, 3))
 
-# First Bidirectional LSTM Layer
-x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(input_layer)
+    # First Bidirectional LSTM Layer
+    x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(input_layer)
 
-# Second Bidirectional LSTM Layer
-x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(x)
+    # Second Bidirectional LSTM Layer
+    x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(x)
 
-# Attention Layer
-attention = Dense(1, activation='tanh')(x)
-attention = tf.keras.layers.Flatten()(attention)
-attention = tf.keras.layers.Activation('softmax')(attention)
-attention = tf.keras.layers.RepeatVector(200)(attention)
-attention = tf.keras.layers.Permute([2, 1])(attention)
-x = tf.keras.layers.Multiply()([x, attention])
-x = tf.keras.layers.Lambda(lambda x: tf.keras.backend.sum(x, axis=1))(x)
+    # Attention Layer
+    attention = Dense(1, activation='tanh')(x)
+    attention = tf.keras.layers.Flatten()(attention)
+    attention = tf.keras.layers.Activation('softmax')(attention)
+    attention = tf.keras.layers.RepeatVector(200)(attention)
+    attention = tf.keras.layers.Permute([2, 1])(attention)
+    x = tf.keras.layers.Multiply()([x, attention])
+    x = tf.keras.layers.Lambda(lambda x: tf.keras.backend.sum(x, axis=1))(x)
 
-# Fully connected layers
-x = Dense(50, activation='relu')(x)
-x = Dense(25, activation='relu')(x)
-output_layer = Dense(1)(x)  # Regression output
+    # Fully connected layers
+    x = Dense(50, activation='relu')(x)
+    x = Dense(25, activation='relu')(x)
+    output_layer = Dense(1)(x)  # Regression output
 
-# Create model
-optimized_model = Model(inputs=input_layer, outputs=output_layer)
+    # Create model
+    optimized_model = Model(inputs=input_layer, outputs=output_layer)
 
-# Compile the model
-optimized_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+    # Compile the model
+    optimized_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 
-# Model summary
-optimized_model.summary()
+    # Model summary
+    optimized_model.summary()
 
-# Train the model
-history_optimized = optimized_model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val))
+    # Train the model
+    history_optimized = optimized_model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val))
+```
 
-   ```
-
-Comparative Analysis:
-Performance Benchmark
-
-Reproducibility:
-
-Full preprocessing pipeline documented
-
-Hyperparameters: learning_rate=0.001, batch_size=256
-
-License Clarity:
-GPLv3 License

@@ -88,14 +88,45 @@ Key Innovations:
    - Softmax for attention
 
 ```python
-model = Sequential([
-    PermutationLayer(), # Dynamic feature reordering
-    Bidirectional(LSTM(128, return_sequences=True)),
-    AttentionLayer(), # Softmax-based weighting
-    Bidirectional(LSTM(64)),
-    Dense(32, activation='relu'),
-    Dense(1)
-])
+import tensorflow as tf
+from tensorflow.keras.layers import Bidirectional, Attention, Input
+from tensorflow.keras.models import Model
+
+# Define the input shape
+input_layer = Input(shape=(10, 3))
+
+# First Bidirectional LSTM Layer
+x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(input_layer)
+
+# Second Bidirectional LSTM Layer
+x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(x)
+
+# Attention Layer
+attention = Dense(1, activation='tanh')(x)
+attention = tf.keras.layers.Flatten()(attention)
+attention = tf.keras.layers.Activation('softmax')(attention)
+attention = tf.keras.layers.RepeatVector(200)(attention)
+attention = tf.keras.layers.Permute([2, 1])(attention)
+x = tf.keras.layers.Multiply()([x, attention])
+x = tf.keras.layers.Lambda(lambda x: tf.keras.backend.sum(x, axis=1))(x)
+
+# Fully connected layers
+x = Dense(50, activation='relu')(x)
+x = Dense(25, activation='relu')(x)
+output_layer = Dense(1)(x)  # Regression output
+
+# Create model
+optimized_model = Model(inputs=input_layer, outputs=output_layer)
+
+# Compile the model
+optimized_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+
+# Model summary
+optimized_model.summary()
+
+# Train the model
+history_optimized = optimized_model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val))
+
 ```
 
 ## Results
@@ -181,14 +212,45 @@ Alternatively, here is the detailed comparison table:
 2. **Technical Precision**:  
    ```python
    # Hybrid LSTM-RNN Core Architecture
-   model = Sequential([
-       PermutationLayer(),  # Dynamic feature reordering
-       Bidirectional(LSTM(128, return_sequences=True)),
-       AttentionLayer(),    # Softmax-based weighting
-       Bidirectional(LSTM(64)),
-       Dense(32, activation='relu'),
-       Dense(1)
-   ])
+import tensorflow as tf
+from tensorflow.keras.layers import Bidirectional, Attention, Input
+from tensorflow.keras.models import Model
+
+# Define the input shape
+input_layer = Input(shape=(10, 3))
+
+# First Bidirectional LSTM Layer
+x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(input_layer)
+
+# Second Bidirectional LSTM Layer
+x = Bidirectional(LSTM(100, return_sequences=True, dropout=0.2))(x)
+
+# Attention Layer
+attention = Dense(1, activation='tanh')(x)
+attention = tf.keras.layers.Flatten()(attention)
+attention = tf.keras.layers.Activation('softmax')(attention)
+attention = tf.keras.layers.RepeatVector(200)(attention)
+attention = tf.keras.layers.Permute([2, 1])(attention)
+x = tf.keras.layers.Multiply()([x, attention])
+x = tf.keras.layers.Lambda(lambda x: tf.keras.backend.sum(x, axis=1))(x)
+
+# Fully connected layers
+x = Dense(50, activation='relu')(x)
+x = Dense(25, activation='relu')(x)
+output_layer = Dense(1)(x)  # Regression output
+
+# Create model
+optimized_model = Model(inputs=input_layer, outputs=output_layer)
+
+# Compile the model
+optimized_model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+
+# Model summary
+optimized_model.summary()
+
+# Train the model
+history_optimized = optimized_model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val))
+
    ```
 
 Comparative Analysis:
